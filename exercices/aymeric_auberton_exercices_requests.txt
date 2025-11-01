@@ -1,0 +1,142 @@
+https://aymeric-auberton.fr/academie/mysql/exercices
+
+
+I. Première partie
+
+1. SELECT * FROM lpecom_livres;
+
+2. SELECT * FROM lpecom_livres WHERE prix > 20;
+
+3. SELECT * FROM lpecom_livres ORDER BY prix DESC;
+
+4. SELECT prix FROM lpecom_livres ORDER BY prix DESC LIMIT 1;
+
+5. SELECT * FROM lpecom_livres WHERE prix BETWEEN 20 AND 22;
+
+6. SELECT * FROM lpecom_livres WHERE isbn_10 != 2092589547;
+
+7. SELECT MIN(prix) AS minus FROM lpecom_livres;
+
+8. SELECT * FROM lpecom_livres LIMIT 1, 3;
+
+
+
+
+
+
+II. Deuxième partie
+
+1. SELECT DISTINCT t1.id_etudiant FROM lpecom_etudiants AS t1 INNER JOIN lpecom_examens AS t2 ON t1.id_etudiant = t2.id_etudiant;
+
+2. SELECT COUNT(DISTINCT id_etudiant) id_etudiant FROM lpecom_examens;
+
+3. SELECT AVG(note) FROM lpecom_examens WHERE id_examen = 45;
+
+4. SELECT MAX(note) AS meilleur_note FROM lpecom_examens WHERE id_examen = 87;
+
+5. SELECT DISTINCT id_etudiant FROM lpecom_examens WHERE (note > 11 AND id_examen = 45) OR (note > 12 AND id_examen = 87);
+
+6. SELECT t1.*, t2.prenom, t2.nom FROM lpecom_examens AS t1 LEFT JOIN lpecom_etudiants AS t2 ON t1.id_etudiant = t2.id_etudiant;
+
+7. SELECT t1.*, t2.prenom, t2.nom FROM lpecom_examens AS t1 INNER JOIN lpecom_etudiants AS t2 ON t1.id_etudiant = t2.id_etudiant;
+
+8. SELECT t1.nom, t1.prenom, AVG(t2.note) FROM lpecom_etudiants AS t1 INNER JOIN lpecom_examens AS t2 ON t1.id_etudiant = t2.id_etudiant WHERE t1.id_etudiant = 30;
+
+9. SELECT t1.*, t2.nom, t2.prenom FROM lpecom_examens AS t1 INNER JOIN lpecom_etudiants AS t2 ON t1.id_etudiant = t2.id_etudiant ORDER BY t1.note DESC LIMIT 3;
+
+
+
+
+
+
+IV. Quatrième partie
+
+1. SELECT * FROM lpecom_cities WHERE gps_lat = 48.66913724637683 AND gps_lng = 1.87586057971015;
+
+2. SELECT COUNT(*) AS nombre_de_ville FROM lpecom_cities WHERE department_code = (SELECT id FROM lpecom_departments WHERE name = 'Essonne');
+
+3. SELECT COUNT(*) AS nombre_de_ville FROM lpecom_cities WHERE department_code IN (SELECT code FROM lpecom_departments WHERE region_code = (SELECT code FROM lpecom_regions WHERE name = 'Ile-de-France')) AND name LIKE '%-le-Roi';
+
+4. SELECT COUNT(*) AS n_cities FROM lpecom_cities WHERE zip_code = 77320;
+
+5. SELECT COUNT(*) AS nombre_de_ville FROM lpecom_cities WHERE department_code = (SELECT code FROM lpecom_departments WHERE name = 'Seine-et-Marne') AND name LIKE 'Saint-%';
+
+6. SELECT * FROM lpecom_cities WHERE CAST(zip_code AS UNSIGNED) BETWEEN 77210 AND 77810;
+
+7. SELECT * FROM lpecom_cities WHERE department_code = (SELECT code FROM lpecom_departments WHERE name = 'Seine-et-Marne') ORDER BY CAST(zip_code AS SIGNED) DESC LIMIT 2;
+
+8. SELECT MAX(CAST(zip_code AS UNSIGNED)) AS highest_code_postal FROM lpecom_cities;
+
+9. SELECT name, slug FROM lpecom_departments WHERE region_code IN (75, 27, 53, 84, 93);
+
+10. SELECT t1.name, t2.name, t3.name FROM lpecom_regions AS t1 INNER JOIN lpecom_departments AS t2 ON t1.id = t2.region_code INNER JOIN lpecom_cities AS t3 ON t2.code = t3.department_code WHERE t2.code = 77;
+
+
+
+
+
+
+
+V. Cinquième partie
+
+1. SELECT * FROM lpecom_covid WHERE jour = '2021-01-04';
+
+2. SELECT t1.* FROM lpecom_covid AS t1 INNER JOIN lpecom_regions AS t2 ON t1.id_region = t2.id WHERE t1.jour = '2021-01-04';
+
+3. SELECT SUM(n_cum_dose1) AS total_cum_dose1, SUM(n_cum_dose2) AS total_cum_dose2 FROM lpecom_covid WHERE YEAR(jour) = 2020;
+
+4. SELECT SUM(t1.n_cum_dose1) AS total_cum_dose1 FROM lpecom_covid AS t1 INNER JOIN lpecom_regions AS t2 ON t1.id_region = t2.id WHERE YEAR(jour) = 2021 AND MONTH(jour) = 3 AND t2.code = 93;
+
+5. SELECT SUM(t1.n_cum_dose2) AS total_cum_dose2 FROM lpecom_covid AS t1 INNER JOIN lpecom_regions AS t2 ON t1.id_region = t2.id WHERE YEAR(jour) = 2021 AND MONTH(jour) = 3 AND t2.code = 11;
+
+6. SELECT t1.*, t2.jour, t2.n_dose1 FROM lpecom_regions AS t1 INNER JOIN (SELECT id_region, jour, n_dose1 FROM lpecom_covid ORDER BY n_dose1 DESC LIMIT 1) AS t2 on t1.id = t2.id_region;
+
+7. SELECT t1.*, t2.jour, t2.n_dose2 FROM lpecom_regions AS t1 INNER JOIN (SELECT id_region, jour, n_dose2 FROM lpecom_covid ORDER BY n_dose2 DESC LIMIT 1) AS t2 on t1.id = t2.id_region;
+
+8. SELECT t1.couv_dose1, t2.* FROM (SELECT id_region, couv_dose1 FROM lpecom_covid ORDER BY couv_dose1 DESC LIMIT 1) AS t1 INNER JOIN lpecom_regions AS t2 ON t1.id_region = t2.code;
+
+   SELECT t1.couv_dose2, t2.* FROM (SELECT id_region, couv_dose2 FROM lpecom_covid ORDER BY couv_dose2 DESC LIMIT 1) AS t1 INNER JOIN lpecom_regions AS t2 ON t1.id_region = t2.code;
+
+
+9. SELECT t1.couv_dose1, t2.name FROM (SELECT id_region, couv_dose1 FROM lpecom_covid ORDER BY couv_dose1 LIMIT 1) AS t1 INNER JOIN lpecom_regions AS t2 ON t1.id_region = t2.code;
+
+10. SELECT AVG(couv_dose1) AS converture_dose1_avg, AVG(couv_dose2) AS couverture_dose2_avg FROM lpecom_covid WHERE jour = (SELECT MAX(jour) FROM lpecom_covid);
+
+11. SELECT t1.*, t2.name FROM lpecom_covid AS t1 INNER JOIN lpecom_regions AS t2 ON t1.id_region = t2.code WHERE (t1.couv_dose1 * 100 / (SELECT SUM(couv_dose1) FROM lpecom_covid)) > 0.15 AND (t1.couv_dose2 * 100 / (SELECT SUM(couv_dose2) FROM lpecom_covid)) > 0.05;
+
+
+
+
+
+
+VI. Sixième partie
+
+1. SELECT * FROM lpecom_covid_vaccin WHERE jour = '2021-02-14' AND dep_code = 77;
+
+2. SELECT * FROM lpecom_covid_vaccin WHERE jour = '2021-02-14' AND (dep_code = 91 OR dep_code = 77);
+
+3. SELECT SUM(n_dose1) AS total_n_dose1 FROM lpecom_covid_vaccin WHERE MONTH(jour) = 02 AND YEAR(jour) = 2021 AND dep_code = 77 AND vaccin = 3;
+
+4. SELECT SUM(n_dose2) AS total_n_dose2 FROM lpecom_covid_vaccin WHERE (vaccin = 2 OR vaccin = 3) AND MONTH(jour) = 03 AND YEAR(jour) = 2021 AND dep_code = 77;
+
+5. SELECT t1.*, t2.nom FROM (SELECT vaccin, MAX(n_dose1) AS record_dose1 FROM lpecom_covid_vaccin WHERE vaccin != 0 GROUP BY vaccin) AS t1 INNER JOIN lpecom_covid_vaccin_type AS t2 on t1.vaccin = t2.id;
+
+6. SELECT MAX(n_dose2) FROM lpecom_covid_vaccin WHERE vaccin != 0;
+
+   SELECT t1.*, t2.nom AS vaccin_name, t3.name AS department_name FROM lpecom_covid_vaccin AS t1 INNER JOIN lpecom_covid_vaccin_type AS t2 ON t1.vaccin = t2.id INNER JOIN lpecom_departments AS t3 ON t1.dep_code = t3.code WHERE n_dose2 = 5046;
+
+
+7. SELECT MAX(n_dose1) FROM lpecom_covid_vaccin WHERE vaccin = 3;
+
+   SELECT t2.nom AS name_vaccin, t1.jour, t3.name AS department_name, t3.code AS department_code, (t1.n_cum_dose1 + t1.n_cum_dose2) AS total_n_cum_dose FROM lpecom_covid_vaccin AS t1 INNER JOIN lpecom_covid_vaccin_type AS t2 ON t1.vaccin = t2.id INNER JOIN lpecom_departments AS t3 ON t1.dep_code = t3.code WHERE t1.n_dose1 = 7494 AND t1.vaccin = 3;
+
+
+8. SELECT MIN(n_dose1) FROM lpecom_covid_vaccin WHERE vaccin = 1;
+
+   SELECT t2.nom AS name_vaccin, t1.jour, t3.name AS department_name, t3.code AS department_code, (t1.n_cum_dose1 + t1.n_cum_dose2) AS total_n_cum_dose FROM lpecom_covid_vaccin AS t1 INNER JOIN lpecom_covid_vaccin_type AS t2 ON t1.vaccin = t2.id INNER JOIN lpecom_departments AS t3 ON t1.dep_code = t3.code WHERE t1.n_dose1 = 0 AND t1.vaccin = 1;
+
+
+9. SELECT AVG(n_dose1) AS avg_moderna FROM lpecom_covid_vaccin WHERE vaccin = 2;
+
+10. SELECT t1.total_n_dose1, t1.total_n_dose2, t2.nom AS vaccin_name, t3.name AS department_name FROM (SELECT dep_code, vaccin, SUM(n_dose1) AS total_n_dose1, SUM(n_dose2) AS total_n_dose2 FROM lpecom_covid_vaccin GROUP BY dep_code, vaccin) AS t1 INNER JOIN lpecom_covid_vaccin_type AS t2 ON t1.vaccin = t2.id INNER JOIN lpecom_departments AS t3 ON t1.dep_code = t3.code WHERE (t1.vaccin = 2 AND t1.total_n_dose2 >
+9000) OR (t1.vaccin = 1 AND t1.total_n_dose1 > 120000);
